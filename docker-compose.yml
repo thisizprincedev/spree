@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://spree:password@db/spree_production"
+      REDIS_URL: "redis://redis:6379/0"
+      RAILS_ENV: production
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: spree
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: spree_production
+    volumes:
+      - spree_db:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+
+volumes:
+  spree_db:
